@@ -1,0 +1,16 @@
+{
+  "type": "application",
+  "name": "ExampleReactApplication",
+  "category": null,
+  "server": "server.js",
+  "title": {
+    "en_EN": "ExampleReactApplication"
+  },
+  "description": {
+    "en_EN": "ExampleReactApplication"
+  },
+  "files": [
+    "main.js",
+    "main.css"
+  ]
+}
