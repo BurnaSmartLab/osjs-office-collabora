@@ -15,6 +15,13 @@ This is an application that uses React. Taken from the manual:
 
 * https://manual.os-js.org/v3/guide/framework
 
+## Installation
+
+```bash
+npm install --save --production @osjs/example-react-application
+npm run package:discover
+```
+
 ## Contribution
 
 * **Become a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)**

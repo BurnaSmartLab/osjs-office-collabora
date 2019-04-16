@@ -1,5 +1,7 @@
 {
-  "name": "ExampleReactApplication",
+  "name": "osjs-example-react-application",
+  "version": "1.1.9",
+  "description": "OS.js v3 Example React Application",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint *.js",
@@ -8,6 +10,18 @@
     "stylelint": "stylelint index.scss src/**/*.scss",
     "prepublishOnly": "npm run eslint && npm run stylelint && rm ./dist/* && npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/os-js/osjs-example-react-application.git"
+  },
+  "keywords": [
+    "osjs"
+  ],
+  "files": [
+    "dist/",
+    "server.js",
+    "metadata.json"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -30,6 +44,12 @@
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   },
+  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/os-js/osjs-example-react-application/issues"
+  },
+  "homepage": "https://github.com/os-js/osjs-example-react-application#readme",
   "osjs": {
     "type": "package"
   }
