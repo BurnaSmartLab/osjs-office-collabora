@@ -15,3 +15,22 @@ This is an application that uses React. Taken from the manual:
 
 * https://manual.os-js.org/v3/guide/framework
 
+## Contribution
+
+* **Become a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)**
+* **Support on [Open Collective](https://opencollective.com/osjs)**
+* [Contribution Guide](https://github.com/os-js/OS.js/blob/v3/CONTRIBUTING.md)
+
+## Documentation
+
+See the [Official Manuals](https://manual.os-js.org/v3/) for articles, tutorials and guides.
+
+## Links
+
+* [Official Chat](https://gitter.im/os-js/OS.js)
+* [Community Forums and Announcements](https://community.os-js.org/)
+* [Homepage](https://os-js.org/)
+* [Twitter](https://twitter.com/osjsorg) ([author](https://twitter.com/andersevenrud))
+* [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934)
+* [Facebook](https://www.facebook.com/os.js.org)
+* [Docker Hub](https://hub.docker.com/u/osjs/)
