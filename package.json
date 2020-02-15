@@ -30,6 +30,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime": "^7.2.0",
     "@osjs/eslint-config": "^1.0.0",
+    "@osjs/stylelint-config": "^1.0.1",
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.0",
     "eslint": "^5.16.0",
@@ -40,8 +41,6 @@
     "react-dom": "^16.8.6",
     "sass-loader": "^7.1.0",
     "stylelint": "^9.10.1",
-    "stylelint-config-standard": "^18.2.0",
-    "stylelint-scss": "^3.5.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   },
@@ -65,15 +64,7 @@
     "extends": "@osjs/eslint-config"
   },
   "stylelint": {
-    "plugins": [
-      "stylelint-scss"
-    ],
-    "rules": {
-      "at-rule-no-unknown": [true, {
-        "ignoreAtRules": ["extend", "mixin", "include"]
-      }]
-    },
-    "extends": "stylelint-config-standard"
+    "extends": "@osjs/stylelint-config"
   },
   "babel": {
     "presets": [
