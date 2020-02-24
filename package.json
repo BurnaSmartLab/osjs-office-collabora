@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
-    "@osjs/dev-meta": "^1.0.1"
+    "@osjs/dev-meta": "^1.0.3"
   },
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
