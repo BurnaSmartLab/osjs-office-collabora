@@ -1,28 +1,37 @@
+const bodyParser = require('body-parser');
+const { discovery, checkFileInfo, getFile, putFile, putRelativeFile } = require('./wopi');
 
 // Methods OS.js server requires
-module.exports = (core, proc) => ({
+module.exports = (core, proc) => {
 
-  // When server initializes
-  init: async () => {
-    // HTTP Route example (see index.js)
-    core.app.post(proc.resource('/test'), (req, res) => {
-      res.json({hello: 'World'});
-    });
+  const { routeAuthenticated, route } = core.make('osjs/express');
+  const OFFICE_BASE_URL = core.configuration.office['collabora_online'];
+  const vfs = core.make('osjs/vfs');
+  core.app.use(bodyParser.raw({ limit: '1000000kb' }));
+  let userInfo;
 
-    // WebSocket Route example (see index.js)
-    core.app.ws(proc.resource('/socket'), (ws, req) => {
-      ws.send('Hello World');
-    });
-  },
+  return {
+    init: async () => {
+      routeAuthenticated('GET', proc.resource('/discovery'), async (req, res) => {
+        userInfo = req.session.user;
+        discovery({ OFFICE_BASE_URL, req, res })
+      });
 
-  // When server starts
-  start: () => {},
+      route('GET', '/wopi/files/:fileId', async (req, res) => {
+        checkFileInfo({ req, res, vfs, userInfo })
+      });
 
-  // When server goes down
-  destroy: () => {},
+      route('GET', '/wopi/files/:fileId/contents', async (req, res) => {
+        getFile({ req, res, vfs, userInfo })
+      });
 
-  // When using an internally bound websocket, messages comes here
-  onmessage: (ws, respond, args) => {
-    respond('Pong');
+      route('POST', '/wopi/files/:fileId/contents', async (req, res) => {
+        putFile({ req, res, vfs, userInfo })
+      });
+
+      route('POST', '/wopi/files/:fileId', async (req, res) => {
+        putRelativeFile({ req, res, vfs, userInfo })
+      });
+    },
   }
-});
+};

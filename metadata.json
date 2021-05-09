@@ -1,16 +1,20 @@
 {
   "type": "application",
-  "name": "ExampleReactApplication",
-  "category": null,
+  "name": "Office",
+  "category": "office",
   "server": "server.js",
   "title": {
-    "en_EN": "ExampleReactApplication"
+    "en_EN": "Office"
   },
   "description": {
-    "en_EN": "ExampleReactApplication"
+    "en_EN": "Office"
   },
   "files": [
     "main.js",
-    "main.css"
-  ]
+    "main.css",
+    { "filename": "middleware.js", "type": "background" }
+  ],
+  "singleton": true,
+  "icon": "/assets/appicon.png",
+  "autostart": true
 }
