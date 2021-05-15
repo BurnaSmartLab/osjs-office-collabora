@@ -74,8 +74,8 @@ async function checkFileInfo({req, res, vfs, userInfo }){
 
         try {
           await vfs.call({ method: 'stat', user: { username: userInfo.username } }, filePath).then(response => {
-            if (response.size) {
-              fileSize = response.size
+            if ('size' in response) {
+              fileSize = response.size;
             }
             else {
               throw new Error();
@@ -97,14 +97,18 @@ async function checkFileInfo({req, res, vfs, userInfo }){
         //   })
         // }
 
+        console.log(fileSize)
+
         res.json({
           BaseFileName: fileName,
           Size: fileSize,
           UserId: userInfo.id,
           OwnerId: userInfo.username,
           UserCanWrite: true,
-          UserCanNotWriteRelative: false,
-          SupportsUpdate:true
+          UserCanNotWriteRelative: false,  // to show Save As button
+          SupportsUpdate:true,
+          PostMessageOrigin: "http://192.168.1.144:8000"
+          //TODO: version 
         });
         // res.set({
         //   'Content-Security-Policy': 'frame-ancestors  192.168.1.144:*'

@@ -1,0 +1,101 @@
+@import '../../styles/variables';
+
+.menubar{
+  display: block;
+  height: 35px;
+  background-image: linear-gradient(40deg, $primary-color 0%, $secondary-color 99%);
+  box-shadow: 2px 5px 5px 0 white;
+  text-align: center;
+  border-bottom: 1px solid white;
+}
+  
+.menubar span {
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 500;
+  font-size: 1.2em;
+  line-height: 35px;
+  color: white;
+}
+//--------------------------
+// Hamburger Menu
+//--------------------------
+#hambmenu{
+  position: relative;
+  width: 30px;
+  height: 25px;
+  float: left;
+  transition: .5s ease-in-out;
+  cursor: pointer;
+  line-height: 25px;
+}
+#hambmenu div .hambIcon{
+    position: absolute;
+    height: 5px;
+    width: 100%;
+    vertical-align: middle;
+    margin: 20px 0 0 15px;
+    background: white;
+    border-radius: 8px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+    padding: 0px;
+}
+.hambclicker{
+  height: 48px;
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  cursor: pointer;
+  z-index: 9
+}
+//--------------------------
+// Slide In Menu
+//--------------------------
+#menu{
+  position: absolute;
+  height:200px;
+  width: 220px;
+  background-color: white;
+  transform: translateX(-100%);
+  transition: transform 300ms;
+}
+#menu ul{
+    margin-top: 0px;
+    padding: 0px;
+    list-style-type: none;
+    text-align: left;
+}
+#menu ul li{
+    padding: 15px 10px 10px 10px;
+    vertical-align: middle;
+    font-size: 1em;
+    line-height: 1em;
+    border-bottom: 0.5px solid white;
+    border-right: 0.5px solid white;
+    box-shadow: inset 0 0 2px white;
+    background-image:  linear-gradient(40deg, $primary-color 0%, $secondary-color 99%);
+    cursor: pointer;
+}
+
+#menu ul li:hover{
+  background-image:  linear-gradient(40deg, $secondary-color 99%, $primary-color 0%);
+  box-shadow: inset 0 0 2px white;
+}
+
+#menu ul li .fa{
+  color: white;
+  padding-right: 8px;
+}
+#menu ul li span{
+  text-decoration: none;
+  color:white;
+  font-weight: bold;
+}
+#menu.isopen{
+  transform: none
+}

@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './src';
 
+
 // Our launcher
 const register = (core, args, options, metadata) => {
   // Create a new Application instance
@@ -16,10 +17,14 @@ const register = (core, args, options, metadata) => {
     id: 'ExampleReactApplicationWindow',
     title: metadata.title.en_EN,
     icon: proc.resource(metadata.icon),
-    dimension: {width: 400, height: 400},
+    dimension: {width: 350, height: 400},
     position: {left: 700, top: 200}
   });
     win.on('destroy', () => proc.destroy())
+
+    // // Listening to messages from the web-Office iframe
+    // window.addEventListener('message', handlePostMessage,false);
+
     win.render($content => ReactDOM.render(
     <App core={core} win={win} proc={proc} data={args.file}/>,
     $content

@@ -1,12 +1,11 @@
 import React, { createRef, useEffect } from 'react';
 
 export default function LoaderForm(props) {
-
     const formElem = createRef();
     
     useEffect(() => {
         formElem.current.submit()
-    }, []);
+    });
 
     return (
         <div style={{ display: "none" }}>

@@ -32,7 +32,10 @@
     "stream": "0.0.2",
     "url-loader": "^4.1.1",
     "xmldom": "^0.6.0",
-    "xpath": "0.0.32"
+    "xpath": "0.0.32",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",

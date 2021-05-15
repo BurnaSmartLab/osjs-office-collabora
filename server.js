@@ -18,7 +18,7 @@ module.exports = (core, proc) => {
       });
 
       route('GET', '/wopi/files/:fileId', async (req, res) => {
-        checkFileInfo({ req, res, vfs, userInfo })
+        checkFileInfo({req, res, vfs, userInfo })
       });
 
       route('GET', '/wopi/files/:fileId/contents', async (req, res) => {
