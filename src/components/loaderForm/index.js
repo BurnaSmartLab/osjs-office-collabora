@@ -1,10 +1,11 @@
 import React, { createRef, useEffect } from 'react';
 
 export default function LoaderForm(props) {
+
     const formElem = createRef();
     
     useEffect(() => {
-        formElem.current.submit()
+        formElem.current.submit();
     });
 
     return (
@@ -15,6 +16,5 @@ export default function LoaderForm(props) {
                 <input type="submit" value="" />
             </form>
         </div>
-
     );
 }

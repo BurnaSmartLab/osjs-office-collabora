@@ -1,49 +1,107 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import App from '../../index';
 import LoaderForm from '../loaderForm';
 import axios from 'axios';
 import useCore from '../../hooks/core';
-import { CoreProvider } from '../../hooks/core';
+import {useCustomDialog} from '../../hooks/customDialog';
 import './index.scss';
-import uploadfileImage from '../../assets/files.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { handlePostMessage } from '../../postMessages';
-import AppHeader from '../appHeader';
-import CreateFile from '../createFile';
+import CreateFile from '../createFile'
+import BrowseFile from '../browseFile'
 
 export default function Main(props) {
-  const [filePath, setFilePath] = useState(props.data ? props.data.path : null)
-  const { core, win, proc, basic } = useCore();
+  const [filePath, setFilePath] = useState(props.data ? props.data: null);
+  const {core, win, proc, basic, vfs} = useCore();
+  const [fileExtensions, handleCreateFile] = useCustomDialog(core, proc, win, vfs, setFilePath);
   const [wopiUrl, setWopiUrl] = useState('');
   const [accessToken, setAccessToken] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const iframeRef = React.useRef();
+
+  let tray= null ; 
 
   useEffect(() => {
     if (filePath) {
       win.focus();
       //TODO: make it full screen
       win.state.dimension = { width: 1000, height: 1000 }
-      // win.state.clamp=true;
-
       discover();
     }
   }, [filePath]);
 
   useEffect(() => {
-    basic.on('open-file', selectedData => {
-      setFilePath(selectedData.path);
+     tray = core.make('osjs/tray').create({
+        icon:proc.resource(proc.metadata.icon),
+        title: proc.metadata.title.en_EN,
+        onclick: ev => core.make('osjs/contextmenu').show({
+          position: ev,
+          menu: [
+            {label: 'Show/ Hide', onclick: () => createWindow(true)},
+            {label: 'Open File', onclick: () => {basic.createOpenDialog()}},
+            {label: 'New Document File', onclick: () =>  {handleCreateFile(fileExtensions.document)}},
+            {label: 'New Presentation File', onclick: () =>  {handleCreateFile(fileExtensions.presentation)}},
+            {label: 'New Spreadsheet File', onclick: () => {handleCreateFile(fileExtensions.spreedsheet)}},
+            {label: 'Quit', onclick: () => proc.destroy()},
+          ]
+        }),
     });
-    win.on('drop', (_, draggedData) => basic.open(draggedData));
+    
+  proc.on('destroy', () => tray.destroy());
+  proc.on('destroy', () => win.destroy());
+  win.on('drop', (_, draggedData) => basic.open(draggedData));
+  win.on('destroy', ()=>{
+    tray.update({
+      onclick: ev => core.make('osjs/contextmenu').show({
+        position: ev,
+        menu: [
+          {label:'Show/ Hide', onclick: () => createWindow(true)},
+          {label: 'Quit', onclick: () => proc.destroy()},
+        ]
+      }),
+    })
+  })
   }, []);
 
   useEffect(() => {
     if (loading) {
-      // Listening to messages from the web-Office iframe
-      window.addEventListener('message', (event) => { handlePostMessage(event, iframeRef) }, false);
+      window.addEventListener('message', (event) => { handlePostMessage(event, iframeRef) }, false); // Listening to messages from the web-Office iframe
     }
   }, [loading]);
+
+  
+const createWindow = (traybool = false)=> {
+  const id = 'OfficeApplicationWindow';
+  const exists = proc.windows.find(win => win.id === id);
+  if (exists) {
+    if (!exists.state.minimized && traybool === true) {
+      exists.blur();
+      exists.minimize();
+    } else {
+      exists.raise();
+      exists.restore();
+      exists.focus();
+    }
+    return exists;
+  }
+  tray.destroy();
+
+   const win = proc.createWindow({
+    id: 'OfficeApplicationWindow',
+    title: proc.metadata.title.en_EN,
+    icon: proc.resource(proc.metadata.icon),
+    dimension: {width: 350, height: 400},
+    position: {left: 700, top: 200},
+    attributes: {
+      sessionable: true
+    }
+  });
+    win.render($content => ReactDOM.render(
+      <App core={core} win={win} proc={proc} data={filePath} />,
+    $content
+    ));
+    win.once('render', () => win.focus())
+}
 
   async function discover() {
     await axios.get(proc.resource('/discovery'), {
@@ -64,32 +122,10 @@ export default function Main(props) {
       })
   }
 
-  function handleCreateFile(fileType) {
-    const createFileWindow = proc.createWindow({
-      id: 'createFileWin',
-      title: 'Create File',
-      dimension: { width: 300, height: 250 },
-      position: { left: 500, top: 500 }
-    });
-    createFileWindow.on('destroy', () => { });
-    createFileWindow.render($content => {
-      ReactDOM.render(
-        <CoreProvider core={core} proc={proc} win={createFileWindow}>
-          <CreateFile fileType={fileType} action={setFilePath} />
-        </CoreProvider>
-        , $content
-      )
-    });
-  }
-
-  const handleCreateAction = (filetype) => {
-    handleCreateFile(filetype)
-  }
 
   if (loading) {
     return (
       <div className='outerBox'>
-        <AppHeader createAction={handleCreateAction} openAction={setFilePath} />
         <div id='frameholder' className='frameholder'>
           <LoaderForm url={wopiUrl} token={accessToken} />
           <iframe ref={iframeRef} className='officeframe' title="Collabora Online Viewer" id="collabora-online-viewer" name="collabora-online-viewer" />
@@ -101,34 +137,8 @@ export default function Main(props) {
   return (
     <div className='officeContainer'>
       <div className='appContent'>
-        <div className='fileBrowseArea'>
-          <img src={uploadfileImage}></img>
-          <p>Drag and Drop files here!</p>
-          {/* <p>or</p> */}
-          <button onClick={() => basic.createOpenDialog()}>browse</button>
-        </div>
-        <div className='newFileArea'>
-          <ul>
-            <li onClick={() => handleCreateFile('Document')}>
-              <span>New Document</span>
-              <div>
-                <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
-              </div>
-            </li>
-            <li onClick={() => handleCreateFile('Presentation')}>
-              <span>New Presentation</span>
-              <div>
-                <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
-              </div>
-            </li>
-            <li onClick={() => handleCreateFile('Spreadsheet')}>
-              <span>New Spreadsheet</span>
-              <div>
-                <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
-              </div>
-            </li>
-          </ul>
-        </div>
+        <BrowseFile action={setFilePath} />
+        <CreateFile action={setFilePath} />
       </div>
     </div>
   );

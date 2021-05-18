@@ -4,7 +4,9 @@ const CoreContext = React.createContext();
 
 export function CoreProvider({children, core, proc, win}) {
   const [basic] = React.useState(() =>
-    core.make('osjs/basic-application', proc, win)
+    core.make('osjs/basic-application', proc, win, {
+      defaultFilename: 'alaki'
+    })
   );
   const [vfs] = React.useState(() => core.make('osjs/vfs'));
   const [_] = React.useState(() => core.make('osjs/locale').translate);

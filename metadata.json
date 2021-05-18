@@ -15,6 +15,5 @@
     { "filename": "middleware.js", "type": "background" }
   ],
   "singleton": true,
-  "icon": "/assets/appicon.png",
-  "autostart": true
+  "icon": "/assets/appicon.png"
 }
