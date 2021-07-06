@@ -1,12 +1,11 @@
-import  {useEffect} from 'react';
-
+import { useEffect } from 'react';
 
 export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
-  
+
     const fileExtensions = {
-        document: ['docx','txt','odt'],
-        presentation: ['pptx','odp'],
-        spreedsheet: ['xlsx','ods']
+        document: ['docx', 'docx', 'odt'],
+        presentation: ['pptx', 'odp'],
+        spreedsheet: ['xlsx', 'ods']
     };
 
     const fileMimeTypes = {
@@ -24,21 +23,23 @@ export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
     })
 
     useEffect(() => {
-        newBasic.on('new-save-file', (selectedFile, fileType) => {
+        newBasic.on('new-save-file', async (selectedFile, fileType) => {
             let hasExtension = false;
+            let filePath = selectedFile.path;
             fileType.map(item => {
                 if (selectedFile.filename.endsWith(item)) {
                     hasExtension = true;
                 }
             })
             if (!hasExtension) {
-                vfs.writefile(`${selectedFile.path}.${fileType[0]}`, '');
-                setFilePath(`${selectedFile.path}.${fileType[0]}`);
-            } else {
-                vfs.writefile(selectedFile.path, '');
-                setFilePath(selectedFile.path);
+                let result= await setUniqueFilePath(selectedFile, fileType);
+                filePath = result.filePath
+                const prefix = core.make('osjs/locale').translatableFlat(proc.metadata.title)
+                win.setTitle(`${prefix} - ${result.fileName}`)
+                  
             }
-
+            vfs.writefile(filePath, '');
+            setFilePath(filePath);
         })
     });
 
@@ -54,6 +55,28 @@ export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
             mime: mimeTypes
         })
     }
-  
+
+    const setUniqueFilePath = async (selectedFile, fileType) => {
+        let filePath = selectedFile.path + '.' + fileType[0];
+        let fileName= selectedFile.filename + '.' + fileType[0];
+        let num = 1
+        while (await FileExist(filePath)) {
+            filePath = selectedFile.path + '(' + num.toString() + ')' + '.' + fileType[0];
+            fileName = selectedFile.filename + '(' + num.toString() + ')' + '.' + fileType[0];
+            num += 1;
+        }
+        return {filePath, fileName}
+    }
+
+    const FileExist = async (filePath) => {
+        let result;
+        await vfs.exists(filePath).then((res) => {
+            result = res
+        }).catch((err) => {
+            console.log(err)
+        })
+        return result
+    }
+
     return [fileExtensions, handleCreateFile];
-  }
+}

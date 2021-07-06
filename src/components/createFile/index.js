@@ -3,35 +3,37 @@ import useCore from '../../hooks/core';
 import './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import {useCustomDialog} from '../../hooks/customDialog';
+import { useCustomDialog } from '../../hooks/customDialog';
 
 export default function LoaderForm(props) {
 
-    const {core, proc, win, vfs } = useCore();
+    const { core, proc, win, vfs, _ } = useCore();
     const [fileExtensions, handleCreateFile] = useCustomDialog(core, proc, win, vfs, props.action);
 
+    const direction = document.getElementsByClassName('osjs-root')[0].getAttribute('data-dir') === 'rtl' ? 'rtl' : 'ltr';
 
     return (
-        <div className='newFileArea'>
-            <ul>
+        <div className='office_newFileArea'>
+            <ul className={direction === 'ltr' ? 'office_ltr' : 'office_rtl'}>
                 <li onClick={() => handleCreateFile(fileExtensions.document)}>
-                    <span>New Document</span>
+                    <span>{_('LBL_NEW_DOCUMENT')}</span>
                     <div>
                         <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
                     </div>
                 </li>
                 <li onClick={() => handleCreateFile(fileExtensions.presentation)}>
-                    <span>New Presentation</span>
+                    <span>{_('LBL_NEW_PRESENTATION')}</span>
                     <div>
                         <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
                     </div>
                 </li>
                 <li onClick={() => handleCreateFile(fileExtensions.spreedsheet)}>
-                    <span>New Spreadsheet</span>
+                    <span>{_('LBL_NEW_SPREADSHEET')}</span>
                     <div>
                         <FontAwesomeIcon icon={faPlus} color='white' size='lg' />
                     </div>
                 </li>
             </ul>
-        </div>);
+        </div>
+    );
 }

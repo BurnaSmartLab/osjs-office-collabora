@@ -1,58 +1,78 @@
-@import '../../styles/variables';
-.newFileArea{
-    position: relative;
-    width: 100%;
-    height: 50%;
-    background-color: white;
-    text-align: center;
-    margin: auto auto;
-  }
-  .newFileArea ul {
-    list-style: none;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70%;
-    height:150px;
-    padding: 0;
-    margin: 0;
-    clear:both
-  }
-    
-  .newFileArea  ul li{
-    position: relative;
-    max-width: 100%; 
-    text-align: left;
-    display: block;
-    cursor: pointer;
-    border-left: 5px solid $primary-color ;
-    box-shadow: 0 0 2px gray;
-    height: 35px;
-    line-height: 35px;
-    padding-left:10px;
+@import "../../styles/variables";
+.office_newFileArea {
+  position: relative;
+  width: 100%;
+  height: 50%;
+  background-color: white;
+  text-align: center;
+  margin: auto auto;
+}
+.office_newFileArea ul {
+  list-style: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 150px;
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.office_newFileArea ul li {
+  position: relative;
+  max-width: 100%;
+  display: block;
+  cursor: pointer;
+  box-shadow: 0 0 2px gray;
+  height: 35px;
+  line-height: 35px;
   margin-top: 10px;
   transition: all 300ms ease-in-out;
-  left:0;
-  top:0;
-  }
-  
-  .newFileArea  ul li:hover {
-    left:1px;
-    top:1px;
-    box-shadow: 0 0 2px gray;
-  }
-  
-  .newFileArea ul li span {
-      color: $primary-color;
-      font-weight:700;
-      font-size: 0.75rem;
-  }
-  
-  .newFileArea ul li div {
-    background-image: linear-gradient(40deg, $primary-color 0%, $secondary-color 99%);
-      float: right;
-      width: 15%;
-      height: 100%;
-      vertical-align: middle;
-      text-align: center;
-  }
+  left: 0;
+  top: 0;
+}
+
+.office_ltr li{
+  border-left: 5px solid $primary-color;
+  text-align: left;
+}
+
+.office_rtl li{
+  border-right: 5px solid $primary-color;
+  text-align: right;
+}
+
+.office_newFileArea ul li:hover {
+  left: 1px;
+  top: 1px;
+  box-shadow: 0 0 2px gray;
+}
+
+.office_newFileArea ul li span {
+  color: $primary-color;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0 10px;
+}
+
+.office_newFileArea ul li div {
+  background-image: linear-gradient(
+    40deg,
+    $primary-color 0%,
+    $secondary-color 99%
+  );
+  width: 15%;
+  height: 100%;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.office_ltr li div{
+  float: right;
+}
+
+.office_rtl li div{
+  float: left;
+}

@@ -1,107 +1,82 @@
-import React, {useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import App from '../../index';
+import React, { useEffect, useState } from 'react';
 import LoaderForm from '../loaderForm';
 import axios from 'axios';
 import useCore from '../../hooks/core';
-import {useCustomDialog} from '../../hooks/customDialog';
+import { useCustomDialog } from '../../hooks/customDialog';
 import './index.scss';
-import { handlePostMessage } from '../../postMessages';
 import CreateFile from '../createFile'
 import BrowseFile from '../browseFile'
 
 export default function Main(props) {
-  const [filePath, setFilePath] = useState(props.data ? props.data: null);
-  const {core, win, proc, basic, vfs} = useCore();
+  const [filePath, setFilePath] = useState(props.data ? props.data.path : null);
+  const {core, win, proc, basic, vfs, _ } = useCore();
   const [fileExtensions, handleCreateFile] = useCustomDialog(core, proc, win, vfs, setFilePath);
   const [wopiUrl, setWopiUrl] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [loading, setLoading] = useState(false);
   const iframeRef = React.useRef();
 
-  let tray= null ; 
+  let tray = null;
 
   useEffect(() => {
     if (filePath) {
       win.focus();
-      //TODO: make it full screen
-      win.state.dimension = { width: 1000, height: 1000 }
+      win.maximize();
       discover();
     }
   }, [filePath]);
 
   useEffect(() => {
-     tray = core.make('osjs/tray').create({
-        icon:proc.resource(proc.metadata.icon),
-        title: proc.metadata.title.en_EN,
-        onclick: ev => core.make('osjs/contextmenu').show({
-          position: ev,
-          menu: [
-            {label: 'Show/ Hide', onclick: () => createWindow(true)},
-            {label: 'Open File', onclick: () => {basic.createOpenDialog()}},
-            {label: 'New Document File', onclick: () =>  {handleCreateFile(fileExtensions.document)}},
-            {label: 'New Presentation File', onclick: () =>  {handleCreateFile(fileExtensions.presentation)}},
-            {label: 'New Spreadsheet File', onclick: () => {handleCreateFile(fileExtensions.spreedsheet)}},
-            {label: 'Quit', onclick: () => proc.destroy()},
-          ]
-        }),
-    });
-    
-  proc.on('destroy', () => tray.destroy());
-  proc.on('destroy', () => win.destroy());
-  win.on('drop', (_, draggedData) => basic.open(draggedData));
-  win.on('destroy', ()=>{
-    tray.update({
+    if(props.data){
+      setWinTitleSuffixed(props.data.filename);
+    }
+  }, [props.data]);
+
+  useEffect(() => {
+    tray = core.make('osjs/tray').create({
+      icon: proc.resource(proc.metadata.icon),
+      title: core.make('osjs/locale').translatableFlat(proc.metadata.title),
       onclick: ev => core.make('osjs/contextmenu').show({
         position: ev,
         menu: [
-          {label:'Show/ Hide', onclick: () => createWindow(true)},
-          {label: 'Quit', onclick: () => proc.destroy()},
+          { label: _('LBL_SHOW_HIDE'), onclick: () => createWindow() },
+          { label: _('LBL_OPEN_FILE'), onclick: () => { basic.createOpenDialog()} },
+          { label: _('LBL_NEW_DOCUMENT'), onclick: () => { handleCreateFile(fileExtensions.document) } },
+          { label: _('LBL_NEW_PRESENTATION'), onclick: () => { handleCreateFile(fileExtensions.presentation) } },
+          { label: _('LBL_NEW_SPREADSHEET'), onclick: () => { handleCreateFile(fileExtensions.spreedsheet) } },
+          { label: _('LBL_QUIT'), onclick: () => proc.destroy() },
         ]
       }),
-    })
-  })
+    });
+
+    win.on('drop', (_, draggedData) => basic.open(draggedData));
+    proc.on('attention', args => {
+      setFilePath(args.file.path);      
+      setWinTitleSuffixed(args.file.filename);
+    });
+    win.on('destroy', () => proc.destroy())
+    proc.on('destroy', () => tray.destroy());
   }, []);
 
-  useEffect(() => {
-    if (loading) {
-      window.addEventListener('message', (event) => { handlePostMessage(event, iframeRef) }, false); // Listening to messages from the web-Office iframe
-    }
-  }, [loading]);
 
-  
-const createWindow = (traybool = false)=> {
-  const id = 'OfficeApplicationWindow';
-  const exists = proc.windows.find(win => win.id === id);
-  if (exists) {
-    if (!exists.state.minimized && traybool === true) {
-      exists.blur();
-      exists.minimize();
+ const setWinTitleSuffixed = (suffix)=> {
+  const prefix = core.make('osjs/locale').translatableFlat(proc.metadata.title)
+  suffix ? win.setTitle(`${prefix} - ${suffix}`) : prefix
+ }
+
+
+  const createWindow = () => {
+    const id = 'OfficeApplicationWindow';
+    const appWin = proc.windows.find(wnd => wnd.id === id);
+    if (!appWin.state.minimized) {
+      appWin.blur();
+      appWin.minimize();
     } else {
-      exists.raise();
-      exists.restore();
-      exists.focus();
+      appWin.raise();
+      appWin.restore();
+      appWin.focus();
     }
-    return exists;
   }
-  tray.destroy();
-
-   const win = proc.createWindow({
-    id: 'OfficeApplicationWindow',
-    title: proc.metadata.title.en_EN,
-    icon: proc.resource(proc.metadata.icon),
-    dimension: {width: 350, height: 400},
-    position: {left: 700, top: 200},
-    attributes: {
-      sessionable: true
-    }
-  });
-    win.render($content => ReactDOM.render(
-      <App core={core} win={win} proc={proc} data={filePath} />,
-    $content
-    ));
-    win.once('render', () => win.focus())
-}
 
   async function discover() {
     await axios.get(proc.resource('/discovery'), {
@@ -125,18 +100,18 @@ const createWindow = (traybool = false)=> {
 
   if (loading) {
     return (
-      <div className='outerBox'>
-        <div id='frameholder' className='frameholder'>
+      <div className='office_outerBox'>
+        <div id='frameholder' className='office_frameholder'>
           <LoaderForm url={wopiUrl} token={accessToken} />
-          <iframe ref={iframeRef} className='officeframe' title="Collabora Online Viewer" id="collabora-online-viewer" name="collabora-online-viewer" />
+          <iframe ref={iframeRef} title="Collabora Online Viewer" id="collabora-online-viewer" name="collabora-online-viewer" />
         </div>
       </div>
     )
   }
 
   return (
-    <div className='officeContainer'>
-      <div className='appContent'>
+    <div className='office_container'>
+      <div className='office_appContent'>
         <BrowseFile action={setFilePath} />
         <CreateFile action={setFilePath} />
       </div>

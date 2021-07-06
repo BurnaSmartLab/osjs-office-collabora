@@ -4,10 +4,12 @@
   "category": "office",
   "server": "server.js",
   "title": {
-    "en_EN": "Office"
+    "en_EN": "Office",
+    "fa_FA" : "آفیس"
   },
   "description": {
-    "en_EN": "Office"
+    "en_EN": "Office",
+    "fa_FA" : "آفیس"
   },
   "files": [
     "main.js",
@@ -15,5 +17,6 @@
     { "filename": "middleware.js", "type": "background" }
   ],
   "singleton": true,
-  "icon": "/assets/appicon.png"
+  "icon": "/assets/appicon.png",
+  "autostart" : false
 }

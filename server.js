@@ -1,9 +1,8 @@
 const bodyParser = require('body-parser');
-const { discovery, checkFileInfo, getFile, putFile, putRelativeFile } = require('./wopi');
+const { discovery, checkFileInfo, getFile, putFile} = require('./wopi');
 
 // Methods OS.js server requires
 module.exports = (core, proc) => {
-
   const { routeAuthenticated, route } = core.make('osjs/express');
   const OFFICE_BASE_URL = core.configuration.office['collabora_online'];
   const vfs = core.make('osjs/vfs');
@@ -28,10 +27,7 @@ module.exports = (core, proc) => {
       route('POST', '/wopi/files/:fileId/contents', async (req, res) => {
         putFile({ req, res, vfs, userInfo })
       });
-
-      route('POST', '/wopi/files/:fileId', async (req, res) => {
-        putRelativeFile({ req, res, vfs, userInfo })
-      });
+      
     },
   }
 };
