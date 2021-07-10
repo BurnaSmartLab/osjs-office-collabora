@@ -6,14 +6,14 @@ const CoreContext = React.createContext();
 export function CoreProvider({children, core, proc, win}) {
   const [basic] = React.useState(() =>
     core.make('osjs/basic-application', proc, win, {
-      defaultFilename: ''
+      defaultFilename: '',
     })
   );
   const [vfs] = React.useState(() => core.make('osjs/vfs'));
 
   const [_] = React.useState(() => {
-    const {translatable} =core.make('osjs/locale')
-    return translatable(translations)
+    const {translatable} = core.make('osjs/locale');
+    return translatable(translations);
   });
 
   return (

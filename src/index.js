@@ -5,7 +5,7 @@ import Main from './components/main';
 export default function App(props) {
   return (
     <CoreProvider core={props.core} proc={props.proc} win={props.win}>
-      <Main data={props.data}/>
+      <Main data={props.data} />
     </CoreProvider>
   );
 }

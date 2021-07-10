@@ -5,18 +5,18 @@
   "server": "server.js",
   "title": {
     "en_EN": "Office",
-    "fa_FA" : "آفیس"
+    "fa_FA": "آفیس"
   },
   "description": {
     "en_EN": "Office",
-    "fa_FA" : "آفیس"
+    "fa_FA": "آفیس"
   },
   "files": [
     "main.js",
     "main.css",
-    { "filename": "middleware.js", "type": "background" }
+    {"filename": "middleware.js", "type": "background"}
   ],
   "singleton": true,
   "icon": "/assets/appicon.png",
-  "autostart" : false
+  "autostart": false
 }

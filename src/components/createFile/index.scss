@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import '../../styles/variables';
 .office_newFileArea {
   position: relative;
   width: 100%;
@@ -34,12 +34,12 @@
   top: 0;
 }
 
-.office_ltr li{
+.office_ltr li {
   border-left: 5px solid $primary-color;
   text-align: left;
 }
 
-.office_rtl li{
+.office_rtl li {
   border-right: 5px solid $primary-color;
   text-align: right;
 }
@@ -69,10 +69,10 @@
   text-align: center;
 }
 
-.office_ltr li div{
+.office_ltr li div {
   float: right;
 }
 
-.office_rtl li div{
+.office_rtl li div {
   float: left;
 }

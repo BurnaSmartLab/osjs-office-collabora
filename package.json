@@ -1,7 +1,8 @@
 {
-  "name": "@osjs/example-react-application",
-  "version": "1.1.11",
-  "description": "OS.js Example React Application",
+  "name": "@burna/osjs-office-collabora",
+  "version": "1.1.1",
+  "description": "Osjs office application working with collabora service",
+  "main": "index.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint *.js",
@@ -12,15 +13,43 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/os-js/osjs-example-react-application.git"
+    "url": "git+https://github.com/BurnaSmartLab/osjs-office-collabora"
   },
   "keywords": [
-    "osjs"
+    "os.js",
+    "office",
+    "document",
+    "presentation",
+    "spreadsheet",
+    "collabora",
+    "collabora_online_development_edition(CODE)"
   ],
   "files": [
-    "dist/",
+    "index.js",
+    "crypto.js",
+    "locales.js",
+    "metadata.json",
+    "middleware.js",
+    "package.json",
+    "private.key",
+    "README.md",
     "server.js",
-    "metadata.json"
+    "wopi.js",
+    "webpack.config.js",
+    "src/assets/appicon.png",
+    "src/assets/files.png",
+    "src/components/browseFile/index.js",
+    "src/components/browseFile/index.scss",
+    "src/components/createFile/index.js",
+    "src/components/createFile/index.scss",
+    "src/components/loaderForm/index.js",
+    "src/components/main/index.js",
+    "src/components/main/index.scss",
+    "src/hooks/core.js",
+    "src/hooks/customeDialog.js",
+    "src/styles/_variables.scss",
+    "src/index.js",
+    "src/fonts/vaziri/*"
   ],
   "dependencies": {
     "react": "^16.8.6",
@@ -39,14 +68,16 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
-    "@osjs/dev-meta": "^1.0.3"
+    "@osjs/dev-meta": "^1.0.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.30.0",
+    "eslint-plugin-react": "^7.24.0",
+    "stylelint": "^13.13.1",
+    "stylelint-config-standard": "^22.0.0"
   },
-  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "author": "Mahsa Shadi <mahsa.shadi@mail.um.ac.ir>",
   "license": "BSD-2-Clause",
-  "bugs": {
-    "url": "https://github.com/os-js/osjs-example-react-application/issues"
-  },
-  "homepage": "https://github.com/os-js/osjs-example-react-application#readme",
+  "homepage": "https://github.com/BurnaSmartLab/osjs-office-collabora/blob/master/README.md",
   "osjs": {
     "type": "package"
   },
@@ -58,10 +89,20 @@
     "parserOptions": {
       "sourceType": "module"
     },
-    "extends": "@osjs/eslint-config"
+    "rules": {
+      "react/prop-types": "off"
+    },
+    "parser": "babel-eslint",
+    "extends": [
+      "@osjs/eslint-config",
+      "plugin:react/recommended"
+    ]
   },
   "stylelint": {
-    "extends": "@osjs/stylelint-config"
+    "extends": "@osjs/stylelint-config",
+    "rules": {
+      "declaration-colon-newline-after": "always-multi-line"
+     }
   },
   "babel": {
     "presets": [

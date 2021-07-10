@@ -1,26 +1,26 @@
 @import '../../styles/variables';
 
-.office_container{
-  font-family: "Vazir";
+.office_container {
+  font-family: 'Vazir';
   width: 100%;
   height: 100%;
 }
-.office_outerBox{
-    width: 100%;
-    height: 100%;
+.office_outerBox {
+  width: 100%;
+  height: 100%;
 }
-.office_appContent{
-   text-align: center;
-    width:100%;
-    height: 100%;
+.office_appContent {
+  text-align: center;
+  width: 100%;
+  height: 100%;
 }
-.office_frameholder{
-    width: 100%;
-    height: 100%;
-    float: left;
-    clear: left;
+.office_frameholder {
+  width: 100%;
+  height: 100%;
+  float: left;
+  clear: left;
 }
 .office_frameholder iframe {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
