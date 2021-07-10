@@ -1,6 +1,6 @@
 {
   "name": "@burna/osjs-office-collabora",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Osjs office application working with collabora service",
   "main": "index.jsx",
   "scripts": {
@@ -71,9 +71,7 @@
     "@osjs/dev-meta": "^1.0.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.30.0",
-    "eslint-plugin-react": "^7.24.0",
-    "stylelint": "^13.13.1",
-    "stylelint-config-standard": "^22.0.0"
+    "eslint-plugin-react": "^7.24.0"
   },
   "author": "Mahsa Shadi <mahsa.shadi@mail.um.ac.ir>",
   "license": "BSD-2-Clause",
@@ -99,10 +97,7 @@
     ]
   },
   "stylelint": {
-    "extends": "@osjs/stylelint-config",
-    "rules": {
-      "declaration-colon-newline-after": "always-multi-line"
-     }
+    "extends": "@osjs/stylelint-config"
   },
   "babel": {
     "presets": [
