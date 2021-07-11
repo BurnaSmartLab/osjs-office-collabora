@@ -13,6 +13,7 @@ const register = (core, args, options, metadata) => {
     dimension: {width: 350, height: 400},
     position: {left: 700, top: 200},
     attributes: {
+      minDimension: {width: 350, height: 400},
       sessionable: true,
     },
   });
