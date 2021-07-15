@@ -1,36 +1,37 @@
-const bodyParser = require('body-parser');
 const {discovery, checkFileInfo, getFile, putFile} = require('./wopi');
 
 // Methods OS.js server requires
 module.exports = (core, proc) => {
-  const {routeAuthenticated, route} = core.make('osjs/express');
-  const OFFICE_BASE_URL = core.configuration.office['collabora_online'];
   const vfs = core.make('osjs/vfs');
-  core.app.use(bodyParser.raw({limit: '1000000kb'}));
+  const {routeAuthenticated, route} = core.make('osjs/express');
   let userInfo;
+
+  const withErrorHandler = (fn) => async (req, res) => {
+    const vfsWithSession = (method, ...args) => vfs
+      .call({method, user: {username: userInfo.username}}, ...args);
+
+    try {
+      await fn({req, res, core, vfs, vfsWithSession, userInfo});
+    } catch (e) {
+      res.status(500).end();
+      console.error(e);
+    }
+  };
 
   return {
     init: async () => {
       routeAuthenticated(
         'GET',
         proc.resource('/discovery'),
-        async (req, res) => {
-          userInfo = req.session.user;
-          discovery({OFFICE_BASE_URL, req, res});
-        }
+        withErrorHandler((args) => {
+          userInfo = args.req.session.user;
+          return discovery(args);
+        })
       );
 
-      route('GET', '/wopi/files/:fileId', async (req, res) => {
-        checkFileInfo({req, res, vfs, userInfo});
-      });
-
-      route('GET', '/wopi/files/:fileId/contents', async (req, res) => {
-        getFile({req, res, vfs, userInfo});
-      });
-
-      route('POST', '/wopi/files/:fileId/contents', async (req, res) => {
-        putFile({req, res, vfs, userInfo});
-      });
+      route('GET', '/wopi/files/:fileId', withErrorHandler(checkFileInfo));
+      route('GET', '/wopi/files/:fileId/contents', withErrorHandler(getFile));
+      route('POST', '/wopi/files/:fileId/contents', withErrorHandler(putFile));
     },
   };
 };

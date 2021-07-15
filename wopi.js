@@ -6,67 +6,71 @@ const fs = require('fs');
 const {Readable} = require('stream');
 const {encrypt, decrypt} = require('./crypto');
 
-async function discovery({OFFICE_BASE_URL, req, res}) {
-  const filePathHash = encrypt(req.query.id);
-  let httpClient = OFFICE_BASE_URL.startsWith('https') ? https : http;
-  let data = '';
-  let request = httpClient.get(
-    OFFICE_BASE_URL + '/hosting/discovery',
-    (response) => {
-      response.on('data', (chunk) => {
-        data += chunk.toString();
-      });
-      response.on('end', () => {
-        let err;
-        if (response.statusCode !== 200) {
-          err = 'Request failed. Satus Code: ' + response.statusCode;
-          response.resume();
-          res.status(response.statusCode).send(err);
-          console.log(err);
-          return;
-        }
-        if (!response.complete) {
-          err =
-            'No able to retrieve the discovery.xml file from the Collabora Online server with the submitted address.';
-          res.status(404).send(err);
-          console.log(err);
-          return;
-        }
-        let doc = new Dom().parseFromString(data);
-        if (!doc) {
-          err = 'The retrieved discovery.xml file is not a valid XML file';
-          res.status(404).send(err);
-          console.log(err);
-          return;
-        }
-        let mimeType = 'text/plain';
-        let nodes = xpath.select(
-          '/wopi-discovery/net-zone/app[@name=\'' + mimeType + '\']/action',
-          doc
-        );
-        if (!nodes || nodes.length !== 1) {
-          err = 'The requested mime type is not handled';
-          res.status(404).send(err);
-          console.log(err);
-          return;
-        }
-        let onlineUrl = nodes[0].getAttribute('urlsrc');
-        res.json({
-          url: onlineUrl,
-          token: 'test',
-          fileId: filePathHash,
-        });
-      });
-      response.on('error', (err) => {
-        res.status(404).send('Request error: ' + err);
-        console.log('Request error: ' + err.message);
-      });
+function fetchDiscovery(baseUri, filePathHash) {
+  const parseResponse = (response, data) => {
+    if (response.statusCode !== 200) {
+      const err = new Error('Request failed. Satus Code: ' + response.statusCode);
+      err.statusCode = response.statusCode;
+      throw err;
+    } else if (!response.complete) {
+      throw new Error('No able to retrieve the discovery.xml file from the Collabora Online server with the submitted address.');
     }
-  );
-  request.on('error', (err) => {
-    res.status(404).send('Request error: ' + err);
-    console.error(err);
+
+    let doc = new Dom().parseFromString(data);
+    if (!doc) {
+      throw new Error('The retrieved discovery.xml file is not a valid XML file');
+    }
+
+    let mimeType = 'text/plain';
+    let nodes = xpath.select(
+      `/wopi-discovery/net-zone/app[@name='${mimeType}']/action`,
+      doc
+    );
+    if (!nodes || nodes.length !== 1) {
+      throw new Error('The requested mime type is not handled');
+    }
+
+    let onlineUrl = nodes[0].getAttribute('urlsrc');
+    return {
+      url: onlineUrl,
+      token: 'test',
+      fileId: filePathHash,
+    };
+  };
+
+  return new Promise((resolve, reject) => {
+    const httpClient = baseUri.startsWith('https') ? https : http;
+    const url = baseUri + '/hosting/discovery';
+
+    const request = httpClient.get(url, (response) => {
+      let data = '';
+      response.on('error', reject);
+      response.on('data', (chunk) => (data += chunk.toString()));
+      response.on('end', () => {
+        try {
+          const parsed = parseResponse(response, data);
+          resolve(parsed);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+
+    request.on('error', reject);
   });
+}
+
+async function discovery({req, res, core}) {
+  const baseUri = core.config('office.collabora_online', '');
+  const filePathHash = encrypt(req.query.id);
+
+  try {
+    const result = await fetchDiscovery(baseUri, filePathHash);
+    res.json(result);
+  } catch (e) {
+    res.status(e.statusCode || 404).send(e.message);
+    console.error(e);
+  }
 }
 
 /* *
@@ -78,46 +82,30 @@ async function discovery({OFFICE_BASE_URL, req, res}) {
  *  The CheckFileInfo wopi endpoint is triggered by a GET request at
  *  https://HOSTNAME/wopi/files/<document_id>
  */
-async function checkFileInfo({req, res, vfs, userInfo}) {
+async function checkFileInfo({req, res, vfsWithSession, userInfo}) {
+  let fileSize = null;
+  const origin = 'http://192.168.1.144:8000'; // FIXME
   const filePath = decrypt(req.params.fileId);
   const fileName = filePath.split('/').pop();
-  let fileSize = null;
 
-  try {
-    try {
-      await vfs
-        .call({method: 'stat', user: {username: userInfo.username}}, filePath)
-        .then((response) => {
-          if ('size' in response) {
-            fileSize = response.size;
-          } else {
-            throw new Error();
-          }
-        });
-    } catch{
-      await vfs
-        .call(
-          {method: 'readfile', user: {username: userInfo.username}},
-          filePath
-        )
-        .then((response) => {
-          fileSize = response.headers['content-length'];
-        });
-    }
-
-    res.json({
-      BaseFileName: fileName,
-      Size: fileSize,
-      UserId: userInfo.id,
-      OwnerId: userInfo.username,
-      UserCanWrite: true,
-      // UserCanNotWriteRelative: false,  // to show Save As button
-      SupportsUpdate: true,
-      PostMessageOrigin: 'http://192.168.1.144:8000',
-    });
-  } catch (err) {
-    console.log(err);
+  const stat = await vfsWithSession('stat', filePath);
+  if (stat.size) {
+    fileSize = stat.size;
+  } else {
+    const file = await vfsWithSession('readfile', filePath);
+    fileSize = file.headers['content-length'];
   }
+
+  res.json({
+    BaseFileName: fileName,
+    Size: fileSize,
+    UserId: userInfo.id,
+    OwnerId: userInfo.username,
+    UserCanWrite: true,
+    // UserCanNotWriteRelative: false,  // to show Save As button
+    SupportsUpdate: true,
+    PostMessageOrigin: origin,
+  });
 }
 
 /* *
@@ -127,21 +115,18 @@ async function checkFileInfo({req, res, vfs, userInfo}) {
  *  The GetFile wopi endpoint is triggered by a request with a GET verb at
  *  https://HOSTNAME/wopi/files/<document_id>/contents
  */
-async function getFile({req, res, vfs, userInfo}) {
+async function getFile({req, res, vfs, vfsWithSession, userInfo}) {
   const filePath = decrypt(req.params.fileId);
 
   if (filePath.startsWith('myMonster')) {
-    await vfs
-      .call({method: 'readfile', user: {username: userInfo.username}}, filePath)
-      .then((response) => {
-        response.pipe(res);
-      });
+    const response = await vfsWithSession('readfile', filePath);
+    response.pipe(res);
   } else {
     const realPath = await vfs.realpath(filePath, {
       username: userInfo.username,
     });
-    const fileBuffer = fs.readFileSync(realPath);
-    res.send(fileBuffer);
+    const stream = fs.createReadStream(realPath);
+    stream.pipe(res);
   }
 }
 
@@ -152,15 +137,11 @@ async function getFile({req, res, vfs, userInfo}) {
  * The PutFile wopi endpoint is triggered by a request with a POST verb at
  * https://HOSTNAME/wopi/files/<document_id>/contents
  */
-async function putFile({req, res, vfs, userInfo}) {
+async function putFile({req, res, vfsWithSession}) {
   if (req.body) {
     const filePath = decrypt(req.params.fileId);
     const stream = Readable.from(req.body);
-    await vfs.call(
-      {method: 'writefile', user: {username: userInfo.username}},
-      filePath,
-      stream
-    );
+    await vfsWithSession('writefile', filePath, stream);
     res.sendStatus(200);
   } else {
     console.log('Not possible to get the file content.');
