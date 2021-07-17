@@ -51,9 +51,10 @@ async function discovery({OFFICE_BASE_URL, req, res}) {
           return;
         }
         let onlineUrl = nodes[0].getAttribute('urlsrc');
+        let sessionToken = encrypt(JSON.stringify(req.session));
         res.json({
           url: onlineUrl,
-          token: 'test',
+          token: sessionToken,
           fileId: filePathHash,
         });
       });
@@ -78,7 +79,8 @@ async function discovery({OFFICE_BASE_URL, req, res}) {
  *  The CheckFileInfo wopi endpoint is triggered by a GET request at
  *  https://HOSTNAME/wopi/files/<document_id>
  */
-async function checkFileInfo({req, res, vfs, userInfo}) {
+async function checkFileInfo({req, res, vfs}) {
+  let session = JSON.parse(decrypt(req.query.access_token));
   const filePath = decrypt(req.params.fileId);
   const fileName = filePath.split('/').pop();
   let fileSize = null;
@@ -86,7 +88,7 @@ async function checkFileInfo({req, res, vfs, userInfo}) {
   try {
     try {
       await vfs
-        .call({method: 'stat', user: {username: userInfo.username}}, filePath)
+        .call({method: 'stat', session: session}, filePath)
         .then((response) => {
           if ('size' in response) {
             fileSize = response.size;
@@ -94,12 +96,9 @@ async function checkFileInfo({req, res, vfs, userInfo}) {
             throw new Error();
           }
         });
-    } catch{
+    } catch {
       await vfs
-        .call(
-          {method: 'readfile', user: {username: userInfo.username}},
-          filePath
-        )
+        .call({method: 'readfile', session: session}, filePath)
         .then((response) => {
           fileSize = response.headers['content-length'];
         });
@@ -108,8 +107,8 @@ async function checkFileInfo({req, res, vfs, userInfo}) {
     res.json({
       BaseFileName: fileName,
       Size: fileSize,
-      UserId: userInfo.id,
-      OwnerId: userInfo.username,
+      UserId: session.user.id,
+      OwnerId: session.user.username,
       UserCanWrite: true,
       // UserCanNotWriteRelative: false,  // to show Save As button
       SupportsUpdate: true,
@@ -127,18 +126,19 @@ async function checkFileInfo({req, res, vfs, userInfo}) {
  *  The GetFile wopi endpoint is triggered by a request with a GET verb at
  *  https://HOSTNAME/wopi/files/<document_id>/contents
  */
-async function getFile({req, res, vfs, userInfo}) {
+async function getFile({req, res, vfs}) {
   const filePath = decrypt(req.params.fileId);
+  let session = JSON.parse(decrypt(req.query.access_token));
 
   if (filePath.startsWith('myMonster')) {
     await vfs
-      .call({method: 'readfile', user: {username: userInfo.username}}, filePath)
+      .call({method: 'readfile', session: session}, filePath)
       .then((response) => {
         response.pipe(res);
       });
   } else {
     const realPath = await vfs.realpath(filePath, {
-      username: userInfo.username,
+      username: session.user.username,
     });
     const fileBuffer = fs.readFileSync(realPath);
     res.send(fileBuffer);
@@ -152,12 +152,13 @@ async function getFile({req, res, vfs, userInfo}) {
  * The PutFile wopi endpoint is triggered by a request with a POST verb at
  * https://HOSTNAME/wopi/files/<document_id>/contents
  */
-async function putFile({req, res, vfs, userInfo}) {
+async function putFile({req, res, vfs}) {
+  let session = JSON.parse(decrypt(req.query.access_token));
   if (req.body) {
     const filePath = decrypt(req.params.fileId);
     const stream = Readable.from(req.body);
     await vfs.call(
-      {method: 'writefile', user: {username: userInfo.username}},
+      {method: 'writefile', session: session},
       filePath,
       stream
     );
