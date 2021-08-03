@@ -4,10 +4,9 @@ const https = require('https');
 const xpath = require('xpath');
 const fs = require('fs');
 const {Readable} = require('stream');
-const {encrypt, decrypt} = require('./crypto');
+const {decrypt} = require('./crypto');
 
 async function discovery({OFFICE_BASE_URL, req, res}) {
-  const filePathHash = encrypt(req.query.id);
   let httpClient = OFFICE_BASE_URL.startsWith('https') ? https : http;
   let data = '';
   let request = httpClient.get(
@@ -50,12 +49,9 @@ async function discovery({OFFICE_BASE_URL, req, res}) {
           console.log(err);
           return;
         }
-        let onlineUrl = nodes[0].getAttribute('urlsrc');
-        let sessionToken = encrypt(JSON.stringify(req.session));
+        let urlSrc = nodes[0].getAttribute('urlsrc');
         res.json({
-          url: onlineUrl,
-          token: sessionToken,
-          fileId: filePathHash,
+          url: urlSrc
         });
       });
       response.on('error', (err) => {

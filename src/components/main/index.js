@@ -17,20 +17,25 @@ export default function Main(props) {
     vfs,
     setFilePath
   );
+  const [urlSrc, setUrlSrc] = useState(null);
   const [wopiUrl, setWopiUrl] = useState('');
-  const [accessToken, setAccessToken] = useState('');
+  const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const iframeRef = React.useRef();
 
   let tray = null;
 
   useEffect(() => {
-    if (filePath) {
+    discover();
+  }, []);
+
+  useEffect(() => {
+    if (filePath && urlSrc) {
       win.focus();
       win.maximize();
-      discover();
+      getFileIdToken();
     }
-  }, [filePath]);
+  }, [filePath, urlSrc]);
 
   useEffect(() => {
     if (props.data) {
@@ -107,17 +112,29 @@ export default function Main(props) {
 
   async function discover() {
     await axios
-      .get(proc.resource('/discovery'), {
+      .get(proc.resource('/discovery'))
+      .then((res) => {
+        const {url} = res.data;
+        setUrlSrc(url);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  async function getFileIdToken() {
+    await axios
+      .get(proc.resource('/fileIdToken'), {
         params: {
           id: filePath,
         },
       })
       .then((res) => {
-        const {url, token, fileId} = res.data;
+        const {fileId, token} = res.data;
+        setAccessToken(token);
         const locationOrigin = window.location.origin;
         const wopiSrc = `${locationOrigin}/wopi/files/${fileId}`;
-        setAccessToken(token);
-        setWopiUrl(`${url}WOPISrc=${wopiSrc}`);
+        setWopiUrl(`${urlSrc}WOPISrc=${wopiSrc}`);
         setLoading(true);
       })
       .catch((error) => {

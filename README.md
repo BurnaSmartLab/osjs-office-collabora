@@ -17,13 +17,13 @@ cd src/packages
 2- Clone hosting application in this directory
 
 ```bash
-git clone https://github.com/BurnaSmartLab/osjs-office-collabora.git
+git clone https://opengit.ir/smartlab/hafez/office-collabora.git
 ```
 
 3- Then navigate to cloned directory
 
 ```bash
-cd osjs-office-collabora
+cd office-collabora
 ```
 
 4- Run following command in the current directory to install dependencies
@@ -67,11 +67,13 @@ npm run package:discover
 
 ## Usage:
 
-Add following `office` config to `src/server/config.js` file of OSjs:
+Add following `office` and `express` config to `src/server/config.js` file of OSjs:
 
 ```js
 // Replace 'http://localhost:12345' with your valid Collabora server address
-
+    express:{
+      maxBodySize:'1000000kb'
+    },
     office: {
       collabora_online: 'http://localhost:12345'
     },
