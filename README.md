@@ -17,13 +17,13 @@ cd src/packages
 2- Clone hosting application in this directory
 
 ```bash
-git clone https://opengit.ir/smartlab/hafez/office-collabora.git
+git clone https://github.com/BurnaSmartLab/osjs-office-collabora.git
 ```
 
 3- Then navigate to cloned directory
 
 ```bash
-cd office-collabora
+cd osjs-office-collabora
 ```
 
 4- Run following command in the current directory to install dependencies
