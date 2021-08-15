@@ -105,6 +105,7 @@ async function checkFileInfo({req, res, vfs}) {
       Size: fileSize,
       UserId: session.user.id,
       OwnerId: session.user.username,
+      UserFriendlyName: session.user.username,
       UserCanWrite: true,
       // UserCanNotWriteRelative: false,  // to show Save As button
       SupportsUpdate: true,

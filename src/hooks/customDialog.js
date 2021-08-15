@@ -2,23 +2,27 @@ import {useEffect} from 'react';
 
 export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
   const fileExtensions = {
-    document: ['docx', 'docx', 'odt'],
-    presentation: ['pptx', 'odp'],
-    spreedsheet: ['xlsx', 'ods'],
+    document: ['docx', 'doc', 'odt', 'rtf'],
+    presentation: ['pptx', 'odp', 'ppt'],
+    spreedsheet: ['xlsx', 'ods', 'xls'],
   };
 
   const fileMimeTypes = {
     docx: [
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
+    doc: ['application/msword'],
     pptx: [
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     ],
+    ppt: ['application/vnd.ms-powerpoint'],
     xlsx: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    xls: ['application/vnd.ms-excel'],
     odt: ['application/vnd.oasis.opendocument.text'],
     odp: ['application/vnd.oasis.opendocument.presentation'],
     ods: ['application/vnd.oasis.opendocument.spreadsheet'],
     txt: ['text/plain'],
+    rtf: ['application/rtf'],
   };
 
   const newBasic = core.make('osjs/basic-application', proc, win, {
@@ -52,6 +56,7 @@ export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
     fileType.map((item) => mimeTypes.push(fileMimeTypes[item]));
     mimeTypes.push('container'); // to show myMonster Drive directories to deep in, we must add 'container' mimeType.
     mimeTypes = mimeTypes.flat() || [];
+    console.log(mimeTypes);
 
     newBasic.off('save-file'); // Just to ensure no duplicate events
     newBasic.once('save-file', (result) =>

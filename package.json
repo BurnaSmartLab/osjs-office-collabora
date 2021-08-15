@@ -1,6 +1,6 @@
 {
   "name": "@burna/osjs-office-collabora",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Osjs office application working with collabora service",
   "main": "index.js",
   "scripts": {
@@ -51,7 +51,6 @@
     "src/index.js",
     "src/fonts/vaziri/*",
     "dist/"
-
   ],
   "dependencies": {
     "react": "^16.8.6",

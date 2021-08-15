@@ -13,10 +13,24 @@
   },
   "files": [
     "main.js",
-    "main.css",
-    {"filename": "middleware.js", "type": "background"}
+    "main.css"
   ],
   "singleton": true,
   "icon": "/assets/appicon.png",
-  "autostart": false
+  "autostart": false,
+  "mimes": [
+    "^image\/(.*)",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.oasis.opendocument.text",
+    "application/vnd.oasis.opendocument.presentation",
+    "application/vnd.oasis.opendocument.spreadsheet",
+    "text/plain",
+    "application/pdf",
+    "application/vnd.ms-powerpoint",
+    "application/msword",
+    "application/vnd.ms-excel",
+    "application/rtf"
+  ]
 }

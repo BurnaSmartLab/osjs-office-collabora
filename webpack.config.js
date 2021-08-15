@@ -21,7 +21,6 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     main: path.resolve(__dirname, 'index.js'),
-    middleware: path.resolve(__dirname, 'middleware.js'),
   },
   externals: {
     osjs: 'OSjs',
