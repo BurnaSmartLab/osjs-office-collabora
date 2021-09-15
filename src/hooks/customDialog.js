@@ -2,7 +2,7 @@ import {useEffect} from 'react';
 
 export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
   const fileExtensions = {
-    document: ['docx', 'doc', 'odt', 'rtf'],
+    document: ['docx', 'doc', 'odt', 'rtf', 'txt'],
     presentation: ['pptx', 'odp', 'ppt'],
     spreedsheet: ['xlsx', 'ods', 'xls'],
   };
@@ -56,7 +56,6 @@ export const useCustomDialog = (core, proc, win, vfs, setFilePath) => {
     fileType.map((item) => mimeTypes.push(fileMimeTypes[item]));
     mimeTypes.push('container'); // to show myMonster Drive directories to deep in, we must add 'container' mimeType.
     mimeTypes = mimeTypes.flat() || [];
-    console.log(mimeTypes);
 
     newBasic.off('save-file'); // Just to ensure no duplicate events
     newBasic.once('save-file', (result) =>

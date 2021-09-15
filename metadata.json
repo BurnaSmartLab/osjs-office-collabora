@@ -31,6 +31,7 @@
     "application/vnd.ms-powerpoint",
     "application/msword",
     "application/vnd.ms-excel",
-    "application/rtf"
+    "application/rtf",
+    "container"
   ]
 }
