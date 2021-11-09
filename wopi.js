@@ -3,7 +3,7 @@ const http = require('http');
 const https = require('https');
 const xpath = require('xpath');
 const fs = require('fs');
-const {Readable} = require('stream');
+const stream = require('stream');
 const {decrypt} = require('./crypto');
 
 async function discovery({OFFICE_BASE_URL, req, res}) {
@@ -153,11 +153,15 @@ async function putFile({req, res, vfs}) {
   let session = JSON.parse(decrypt(req.query.access_token));
   if (req.body) {
     const filePath = decrypt(req.params.fileId);
-    const stream = Readable.from(req.body);
+    const Readable = stream.Readable;
+    const s = new Readable();
+    s._read = () => {};
+    s.push(req.body);
+    s.push(null);
     await vfs.call(
       {method: 'writefile', session: session},
       filePath,
-      stream
+      s
     );
     res.sendStatus(200);
   } else {
