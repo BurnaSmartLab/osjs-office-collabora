@@ -109,7 +109,7 @@ async function checkFileInfo({req, res, vfs}) {
       UserCanWrite: true,
       // UserCanNotWriteRelative: false,  // to show Save As button
       SupportsUpdate: true,
-      PostMessageOrigin: 'http://192.168.1.144:8000',
+      PostMessageOrigin: process.env.osjs,
     });
   } catch (err) {
     console.log(err);

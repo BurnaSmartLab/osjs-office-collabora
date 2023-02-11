@@ -53,26 +53,28 @@
     "dist/"
   ],
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "http": "0.0.1-security",
-    "https": "^1.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "stream": "0.0.2",
     "url-loader": "^4.1.1",
     "xmldom": "^0.6.0",
-    "xpath": "0.0.32",
-    "@fortawesome/fontawesome-svg-core": "^1.2.35",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@fortawesome/react-fontawesome": "^0.1.14"
+    "xpath": "0.0.32"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
     "@osjs/dev-meta": "^1.0.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.30.0",
-    "eslint-plugin-react": "^7.24.0"
+    "eslint-plugin-react": "^7.24.0",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.10.0"
   },
   "author": "Mahsa Shadi <mahsa.shadi@mail.um.ac.ir>",
   "license": "BSD-2-Clause",
