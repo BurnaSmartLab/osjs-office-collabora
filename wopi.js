@@ -109,7 +109,7 @@ async function checkFileInfo({req, res, vfs}) {
       UserCanWrite: true,
       // UserCanNotWriteRelative: false,  // to show Save As button
       SupportsUpdate: true,
-      PostMessageOrigin: process.env.osjs,
+      PostMessageOrigin: process.env.osjs_URL,
     });
   } catch (err) {
     console.log(err);

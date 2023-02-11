@@ -45,6 +45,6 @@ module.exports = {
     maxBodySize:'1000000kb'
   },
   office: {
-    collabora_online: 'http://192.168.1.103:9980'
+    collabora_online: process.env.collabora_online_URL
   },
 };
