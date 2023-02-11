@@ -2,8 +2,6 @@ FROM osjs/osjs
 
 WORKDIR /usr/src/osjs
 
-RUN npm i ip
-
 COPY ./package.json ./src/packages/osjs-office-collabora/package.json
 RUN cd ./src/packages/osjs-office-collabora && npm i
 
