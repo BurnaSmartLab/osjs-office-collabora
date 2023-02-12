@@ -107,7 +107,7 @@ async function checkFileInfo({req, res, vfs}) {
       OwnerId: session.user.username,
       UserFriendlyName: session.user.username,
       UserCanWrite: true,
-      // UserCanNotWriteRelative: false,  // to show Save As button
+      UserCanNotWriteRelative: false,  // to show Save As button
       SupportsUpdate: true,
       PostMessageOrigin: process.env.osjs_URL,
     });
