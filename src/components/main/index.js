@@ -29,6 +29,19 @@ export default function Main(props) {
     iframeRef.current.contentWindow.postMessage(JSON.stringify(data), '*');
   }
 
+  useEffect(()=>{
+    basic.on('save-file', ({path}) => {
+      console.log('SSS');
+      post({
+        'MessageId': 'Action_SaveAs',
+        'Values': {
+          Filename: path,
+          Notify: true,
+        }
+      });
+    });
+  }, []);
+
   useEffect(() => {
     discover();
 
@@ -48,21 +61,7 @@ export default function Main(props) {
         }
         if(msg.MessageId === 'UI_SaveAs') {
           if(msg.Values) {
-            alert('Clicked on SaveAs!');
-            console.log({
-              'MessageId': 'Action_SaveAs',
-              'Values': {
-                Filename: 'output.docx',
-                Notify: true,
-              }
-            });
-            post({
-              'MessageId': 'Action_SaveAs',
-              'Values': {
-                Filename: 'output.docx',
-                Notify: true,
-              }
-            });
+            basic.createSaveDialog();
           }
         }
       }catch {
