@@ -1,0 +1,24 @@
+# This is only for development
+
+version: '3'
+
+services:
+  osjs:
+    build:
+      context: .
+      dockerfile: ./demo/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/usr/src/osjs/src/packages/osjs-office-collabora
+      - ./demo/config.js:/usr/src/osjs/src/server/config.js
+      - /usr/src/osjs/src/packages/osjs-office-collabora/node_modules
+    environment:
+      - collabora_online_URL=http://192.168.1.103:9980
+      - osjs_URL=http://192.168.1.103:8000
+  collabora:
+    image: "collabora/code"
+    ports:
+      - "9980:9980"
+    environment:
+      - extra_params=--o:ssl.enable=false

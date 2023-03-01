@@ -81,6 +81,24 @@ Add following `office` and `express` config to `src/server/config.js` file of OS
 
 The office application is available in Office Menu of the OS.js :tada:
 
+## Quick development with docker-compose
+
+Run the following command to run `Collabora`, `OSJS` and `osjs-office-collabora` together:
+
+```bash
+docker compose up -d
+```
+
+Be advised to change the `collabora_online_URL` and `osjs_URL` environments inside `docker-compose.yml` based on your local IP address.
+
+After that the containers are up and running, you can access `OSJS` using your local IP address and the port specified (default 8000) like below:
+
+```
+http://<ip>:8000
+```
+
+Be advised to change `<ip>` with your own local IP address. In addition, every change to the `osjs-office-collabora` results in webpack build and server restart which makes it a very good choice for developing package inside the `OSJS` environment.
+
 ## Quick installation of CODE docker
 
 1- Grab the Docker image
