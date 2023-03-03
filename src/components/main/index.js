@@ -31,7 +31,6 @@ export default function Main(props) {
 
   useEffect(()=>{
     basic.on('save-file', ({path}) => {
-      console.log('SSS');
       post({
         'MessageId': 'Action_SaveAs',
         'Values': {
@@ -48,7 +47,6 @@ export default function Main(props) {
     window.addEventListener('message', (event)=>{
       try {
         let msg = JSON.parse(event.data);
-        console.log(msg);
         if (!msg) {
           return;
         }
