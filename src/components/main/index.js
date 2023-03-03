@@ -25,8 +25,47 @@ export default function Main(props) {
 
   let tray = null;
 
+  function post(data) {
+    iframeRef.current.contentWindow.postMessage(JSON.stringify(data), '*');
+  }
+
+  useEffect(()=>{
+    basic.on('save-file', ({path}) => {
+      post({
+        'MessageId': 'Action_SaveAs',
+        'Values': {
+          Filename: path,
+          Notify: true,
+        }
+      });
+    });
+  }, []);
+
   useEffect(() => {
     discover();
+
+    window.addEventListener('message', (event)=>{
+      try {
+        let msg = JSON.parse(event.data);
+        if (!msg) {
+          return;
+        }
+        if (msg.MessageId === 'App_LoadingStatus') {
+          if (msg.Values) {
+            if (msg.Values.Status === 'Document_Loaded') {
+              post({'MessageId': 'Host_PostmessageReady'});
+            }
+          }
+        }
+        if(msg.MessageId === 'UI_SaveAs') {
+          if(msg.Values) {
+            basic.createSaveDialog();
+          }
+        }
+      }catch {
+        // Not a Collabora message
+      }
+    }, false);
   }, []);
 
   useEffect(() => {
