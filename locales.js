@@ -12,10 +12,7 @@ export const en_EN = {
   LBL_SHARING_MODAL_EMAIL_INPUT_LABEL: 'Enter the email(s) of the individuals you want to share the text with (separate each email with ,)',
   LBL_SHARING_MODAL_SUBMIT_ACTION: 'Share',
   LBL_SHARING_MODAL_CANCEL_ACTION: 'Cancel',
-  LBL_SHARING_START_SHARING_BUTTON: 'Start Sharing',
-  LBL_SHARING_END_SHARING_BUTTON: 'End Sharing',
-  LBL_SHARING_START_SHARING_ERROR: 'First end the current sharing.',
-  LBL_SHARING_END_SHARING_ERROR: 'First start.',
+  LBL_SHARING_BUTTON: 'Share',
 };
 
 export const fa_FA = {
@@ -28,12 +25,9 @@ export const fa_FA = {
   LBL_OPEN_FILE: 'باز کردن فایل',
   LBL_QUIT: 'خروج',
 
-  LBL_SHARING_MODAL_TITLE: 'اشتراک گذاری<',
+  LBL_SHARING_MODAL_TITLE: 'اشتراک گذاری',
   LBL_SHARING_MODAL_EMAIL_INPUT_LABEL: 'ایمیل/ایمیل‌هایی که می‌خواهید متن با آنان به اشتراک گذاشته شود را وارد کنید. (برای جدا سازی چندین ایمیل از , استفاده کنید.)',
   LBL_SHARING_MODAL_SUBMIT_ACTION: 'اشتراک گذاری',
   LBL_SHARING_MODAL_CANCEL_ACTION: 'انصراف',
-  LBL_SHARING_START_SHARING_BUTTON: 'شروع اشتراک گذاری',
-  LBL_SHARING_END_SHARING_BUTTON: 'اتمام اشتراک گذاری',
-  LBL_SHARING_START_SHARING_ERROR: 'ابتدا اشتراک گذاری قبلی را پایان دهید',
-  LBL_SHARING_END_SHARING_ERROR: 'ابتدا اشتراک گذاری را شروع کنید.',
+  LBL_SHARING_BUTTON: 'اشتراک گذاری',
 };
