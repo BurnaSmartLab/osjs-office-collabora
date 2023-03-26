@@ -13,8 +13,8 @@ function getPostMessageContent(sharingValue) {
 
   return {'MessageId': 'Send_UNO_Command',
     'Values': {
-      'command': UNO_COMMAND,
-      'args': {
+      'Command': UNO_COMMAND,
+      'Args': {
         'Bookmark': {
           'type': 'string',
           'value': `${SHARE_PREFIX}${sharingValue}`
