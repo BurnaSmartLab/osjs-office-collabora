@@ -5,7 +5,7 @@ export default function LoaderForm(props) {
 
   useEffect(() => {
     formElem.current.submit();
-  });
+  }, []);
 
   return (
     <div style={{display: 'none'}}>

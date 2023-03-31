@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import LoaderForm from '../loaderForm';
 import axios from 'axios';
 import useCore from '../../hooks/core';
 import {useCustomDialog} from '../../hooks/customDialog';
 import './index.scss';
 import CreateFile from '../createFile';
 import BrowseFile from '../browseFile';
+import Collabora from './Collabora';
 
 export default function Main(props) {
   const [filePath, setFilePath] = useState(props.data ? props.data.path : null);
@@ -20,8 +20,7 @@ export default function Main(props) {
   const [urlSrc, setUrlSrc] = useState(null);
   const [wopiUrl, setWopiUrl] = useState('');
   const [accessToken, setAccessToken] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const iframeRef = React.useRef();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   let tray = null;
 
@@ -135,27 +134,15 @@ export default function Main(props) {
         const locationOrigin = window.location.origin;
         const wopiSrc = `${locationOrigin}/wopi/files/${fileId}`;
         setWopiUrl(`${urlSrc}WOPISrc=${wopiSrc}`);
-        setLoading(true);
+        setIsLoaded(true);
       })
       .catch((error) => {
         console.log(error);
       });
   }
 
-  if (loading) {
-    return (
-      <div className="office_outerBox">
-        <div id="frameholder" className="office_frameholder">
-          <LoaderForm url={wopiUrl} token={accessToken} />
-          <iframe
-            ref={iframeRef}
-            title="Collabora Online Viewer"
-            id="collabora-online-viewer"
-            name="collabora-online-viewer"
-          />
-        </div>
-      </div>
-    );
+  if (isLoaded) {
+    return <Collabora accessToken={accessToken} wopiUrl={wopiUrl} />;
   }
 
   return (
